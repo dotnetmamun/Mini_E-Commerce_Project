@@ -1,0 +1,40 @@
+﻿@model MiniMart.Models.TopSellingReportVm
+
+@{
+    ViewData["Title"] = "Top Selling Products Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Top Selling Products Report</h2>
+
+<div class="mb-3">
+    <p><strong>EF Core Query Time:</strong> @Model.EfElapsedMs ms</p>
+    <p><strong>Dapper Query Time:</strong> @Model.DapperElapsedMs ms</p>
+</div>
+
+@if (Model.DapperResults != null && Model.DapperResults.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Total Quantity Sold</th>
+                <th>Total Sales Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DapperResults)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.TotalQuantity</td>
+                    <td>@item.TotalSales.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No sales data available.</div>
+}

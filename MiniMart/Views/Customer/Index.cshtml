@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<h2>Customers</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            var custId = $"cust_{customer.Id}";
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Email</td>
+                <td>@customer.Phone</td>
+                <td>
+                    <a class="btn btn-info btn-sm" data-bs-toggle="collapse" href="#@custId" role="button">
+                        View Orders
+                    </a>
+                    <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-primary btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@customer.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="p-0">
+                    <div class="collapse" id="@custId">
+                        <div class="card card-body">
+                            @if (customer.Orders == null || !customer.Orders.Any())
+                            {
+                                <div class="alert alert-warning">
+                                    The customer: <b>@customer.Name</b> has nothing purchased.
+                                </div>
+                            }
+                            else
+                            {
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Order Date</th>
+                                            <th>Total Amount</th>
+                                            <th>Order Items</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in customer.Orders)
+                                        {
+                                            var orderId = $"order_{order.Id}";
+                                            <tr>
+                                                <td>@order.OrderDate.ToShortDateString()</td>
+                                                <td>@order.TotalAmount.ToString("C")</td>
+                                                <td>
+                                                    <a class="btn btn-secondary btn-sm" data-bs-toggle="collapse" href="#@orderId">
+                                                        View Items
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="p-0">
+                                                    <div class="collapse" id="@orderId">
+                                                        <div class="card card-body">
+                                                            <table class="table table-bordered table-sm">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Product</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Price</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (var item in order.OrderItems)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@item.Product?.Name</td>
+                                                                            <td>@item.Quantity</td>
+                                                                            <td>@item.Price.ToString("C")</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Add New Customer</a>
+</p>
+

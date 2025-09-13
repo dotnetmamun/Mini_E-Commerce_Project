@@ -1,0 +1,61 @@
+﻿@model IEnumerable<MiniMart.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int page = ViewBag.Page ?? 1;
+    int pageSize = ViewBag.PageSize ?? 5;
+    int total = ViewBag.Total ?? 0;
+    int totalPages = (int)Math.Ceiling((double)total / pageSize);
+}
+
+<h2>Orders</h2>
+
+<p><a class="btn btn-primary" href="/Order/Create">Create Order</a></p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Order Date</th>
+            <th>Total Amount</th>
+            <th>Items</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Customer.Name</td>
+                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@order.TotalAmount.ToString("C")</td>
+                <td>
+                    <ul>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <li>@item.Product.Name (@item.Quantity)</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = order.Id })">Details</a>
+                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = order.Id })">Edit</a>
+                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = order.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

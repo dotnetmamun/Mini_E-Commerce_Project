@@ -1,0 +1,74 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<h2>Customer: @Model.Name</h2>
+<p>Email: @Model.Email</p>
+<p>Phone: @Model.Phone</p>
+
+<h3>Orders</h3>
+
+@if (Model.Orders == null || !Model.Orders.Any())
+{
+    <div class="alert alert-warning">
+        The customer: <b>@Model.Name</b> has nothing purchased.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Orders)
+            {
+                var orderId = $"order_{order.Id}";
+                <tr>
+                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.TotalAmount.ToString("C")</td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" data-bs-toggle="collapse" href="#@orderId">View Items</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="p-0">
+                        <div class="collapse" id="@orderId">
+                            <div class="card card-body">
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <tr>
+                                                <td>@item.Product?.Name</td>
+                                                <td>@item.Quantity</td>
+                                                <td>@item.Price.ToString("C")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>

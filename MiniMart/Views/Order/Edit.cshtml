@@ -1,0 +1,88 @@
+﻿@model MiniMart.Models.OrderCreateDto
+
+@{
+    ViewData["Title"] = "Edit Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Order</h2>
+
+<form asp-action="Edit" method="post" id="orderForm">
+    <div class="form-group mb-3">
+        <label asp-for="CustomerId">Customer</label>
+        <select asp-for="CustomerId" class="form-control" asp-items="@(new SelectList(ViewBag.Customers, "Id", "Name", Model.CustomerId))">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <h4>Order Items</h4>
+    <table class="table table-bordered" id="orderItemsTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th style="width: 40px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        
+                        <select asp-for="Items[@i].ProductId" class="form-control"
+                                asp-items="@(new SelectList(ViewBag.Products, "Id", "Name", Model.Items[i].ProductId))">
+                            <option value="">-- Select Product --</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="Items[@i].Quantity" class="form-control" min="1" value="@Model.Items[i].Quantity" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-item">-</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-primary mb-3" id="addItemBtn">+ Add Item</button>
+    <br />
+    <button type="submit" class="btn btn-success">Update Order</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var itemIndex = @Model.Items.Count;
+
+        $('#addItemBtn').click(function () {
+            var newRow = `<tr>
+                <td>
+                    <select name="Items[${itemIndex}].ProductId" class="form-control">
+                        <option value="">-- Select Product --</option>
+                        @foreach (var p in ViewBag.Products)
+                        {
+                            <option value="@p.Id">@p.Name</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="Items[${itemIndex}].Quantity" class="form-control" min="1" value="1" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-item">-</button>
+                </td>
+            </tr>`;
+            $('#orderItemsTable tbody').append(newRow);
+            itemIndex++;
+        });
+
+        $('#orderItemsTable').on('click', '.remove-item', function () {
+            $(this).closest('tr').remove();
+        });
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

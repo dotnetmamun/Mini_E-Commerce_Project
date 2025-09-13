@@ -1,0 +1,41 @@
+﻿@model MiniMart.Models.Order
+
+@{
+    ViewData["Title"] = "Delete Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete Order</h2>
+
+<p>Are you sure you want to delete this order?</p>
+
+<div class="mb-3">
+    <p><strong>Customer:</strong> @Model.Customer.Name</p>
+    <p><strong>Order Date:</strong> @Model.OrderDate.ToString("yyyy-MM-dd")</p>
+    <p><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+</div>
+
+<h4>Items</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Cancel</a>
+</form>

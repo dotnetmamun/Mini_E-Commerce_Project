@@ -1,0 +1,11 @@
+﻿@model MiniMart.Models.Product
+@{
+    ViewData["Title"] = "Delete Product";
+}
+<h2>Delete Product</h2>
+<p>Are you sure you want to delete <b>@Model.Name</b>?</p>
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
