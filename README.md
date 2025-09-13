@@ -184,6 +184,5 @@ ORDER BY TotalQuantitySold DESC;
 ---
 
 ## 👨‍💻 Author
-**MiniMart Development Team**
-
-Happy Coding! 🎉
+**Abdullah Al Mamun**
+ 🎉
